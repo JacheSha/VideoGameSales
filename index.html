@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电子游戏销量可视化系统</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f9f9f9;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 顶部导航栏 */
+        .navbar {
+            display: flex;
+            background-color: transparent;
+            height: 70px;
+            flex-shrink: 0;
+        }
+
+        .logo {
+            background-color: #d81921;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            padding: 0 10px;
+        }
+
+        .logo .logo-inner {
+            background-color: #d81921;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: 4px solid white;
+            text-align: center;
+            max-width: fit-content;
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #FFFFFF;
+            color: #3c3c3c;
+            font-weight: bold;
+            text-decoration: none;
+            height: 70px;
+            position: relative;
+        }
+
+        .nav-item:not(:last-child)::after {
+            content: "";
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            width: 1px;
+            background-color: #b3b3b3;
+        }
+
+        .nav-item:hover {
+            background-color: #eaeaea;
+        }
+
+        .nav-item.active {
+            color: #d81921;
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* 轮播容器 */
+        .carousel {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .carousel-images {
+            display: flex;
+            transition: transform 0.5s ease;
+            width: 100%;
+            height: 100%;
+        }
+
+        .carousel img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .carousel-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .carousel-button.left {
+            left: 10px;
+        }
+
+        .carousel-button.right {
+            right: 10px;
+        }
+
+        .carousel-indicators {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+        }
+
+        .indicator {
+            width: 10px;
+            height: 10px;
+            background-color: rgba(211, 211, 211, 0.5);
+            border-radius: 50%;
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
+
+        .indicator.active {
+            background-color: rgba(216, 25, 33, 1);
+        }
+
+        /* 底部栏目区域 */
+        .footer-section {
+            display: flex;
+            justify-content: space-around;
+            background-color: #f1f1f1;
+            padding: 0;
+            border-top: 1px solid #ccc;
+            flex-shrink: 0;
+            height: 60px;
+        }
+
+        .footer-item {
+            flex: 1;
+            padding: 15px 0;
+            text-align: center;
+            color: #3c3c3c;
+            font-weight: normal;
+            font-size: 16px;
+            border-right: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .footer-item:last-child {
+            border-right: none;
+        }
+
+        .footer-item:hover {
+            background-color: #eaeaea;
+            cursor: pointer;
+        }
+
+        /* 底部版权信息 */
+        .footer-bottom {
+            background-color: #d81921;
+            color: white;
+            text-align: center;
+            padding: 8px;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <div class="navbar">
+        <div class="logo">
+            <div class="logo-inner">电子游戏销量可视化系统</div>
+        </div>
+        <!-- 首页的链接改为 #，并阻止默认跳转行为 -->
+        <a href="#" class="nav-item active" id="home-link">首页</a>
+        <a href="sales.html" class="nav-item">销量数据</a>
+        <a href="game-types.html" class="nav-item">游戏类型</a>
+        <a href="platforms.html" class="nav-item">游戏平台</a>
+        <a href="developers.html" class="nav-item">游戏厂商</a>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="main-content">
+        <div class="carousel">
+            <div class="carousel-images">
+                <img src="https://images.ctfassets.net/o5v89n4kg6h4/2fTy7JVgZUpbUcW9uMa9P2/2833b0f18e9df2daac817ac099aa48f4/switch_Zelda_Wisdom_240805_l.jpg" alt="Image 1">
+                <img src="https://images.ctfassets.net/o5v89n4kg6h4/4OkO7PHTjXrZTZ1Yid94sD/04be00a7ec80124ee1d1f385749d4794/switch_jamboree_240830_l.jpg" alt="Image 2">
+                <img src="https://images.ctfassets.net/o5v89n4kg6h4/1XkZCZp3WbQzOqnNwKGGRI/038ee300cdde45ff2a57a87d3d5d300c/switch_LuigiMansion2_240310_l.png" alt="Image 3">
+                <img src="https://image.api.playstation.com/vulcan/ap/rnd/202207/1210/6zhGBKQpPrlLNI2a7EfALNs1.png?w=5000&thumb=false" alt="Image 4">
+            </div>
+            <button class="carousel-button left" onclick="prevSlide()">&#10094;</button>
+            <button class="carousel-button right" onclick="nextSlide()">&#10095;</button>
+            <div class="carousel-indicators">
+                <div class="indicator" data-index="0" onclick="showSlide(0)"></div>
+                <div class="indicator" data-index="1" onclick="showSlide(1)"></div>
+                <div class="indicator" data-index="2" onclick="showSlide(2)"></div>
+                <div class="indicator" data-index="3" onclick="showSlide(3)"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部栏目区域 -->
+    <div class="footer-section">
+        <div class="footer-item">最新游戏</div>
+        <div class="footer-item">游戏产业</div>
+        <div class="footer-item">游戏资讯</div>
+        <div class="footer-item">游戏与计算机硬件</div>
+        <div class="footer-item">关于我们</div>
+    </div>
+
+    <!-- 底部版权信息 -->
+    <div class="footer-bottom">
+        Copyright © 2024 南京师范大学Xzq 版权所有<br>
+        地址：江苏省南京市栖霞区文苑路1号 邮箱：249793853@qq.com
+    </div>
+
+    <script>
+        let currentIndex = 0;
+        let autoPlayInterval;
+
+        // 阻止首页链接的默认跳转行为
+        document.getElementById('home-link').addEventListener('click', function(event) {
+            event.preventDefault(); // 阻止跳转
+        });
+
+        function showSlide(index) {
+            const images = document.querySelector('.carousel-images');
+            const indicators = document.querySelectorAll('.indicator');
+            const totalImages = images.children.length;
+            currentIndex = (index + totalImages) % totalImages;
+
+            images.style.transform = `translateX(-${currentIndex * 100}%)`;
+            indicators.forEach((indicator, i) => {
+                indicator.classList.toggle('active', i === currentIndex);
+            });
+        }
+
+        function nextSlide() {
+            showSlide(currentIndex + 1);
+        }
+
+        function prevSlide() {
+            showSlide(currentIndex - 1);
+        }
+
+        function startAutoPlay() {
+            autoPlayInterval = setInterval(nextSlide, 5000);
+        }
+
+        function resetAutoPlay() {
+            clearInterval(autoPlayInterval);
+            startAutoPlay();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            showSlide(0);
+            startAutoPlay();
+        });
+    </script>
+</body>
+</html>

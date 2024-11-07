@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电子游戏销量可视化系统</title>
+    <!-- 引入 Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- 引入 data.js -->
+    <script src="data.js"></script>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f9f9f9;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 顶部导航栏 */
+        .navbar {
+            display: flex;
+            background-color: transparent;
+            height: 70px;
+            flex-shrink: 0;
+        }
+
+        .logo {
+            background-color: #d81921;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            padding: 0 10px;
+        }
+
+        .logo .logo-inner {
+            background-color: #d81921;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: 4px solid white;
+            text-align: center;
+            max-width: fit-content;
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #FFFFFF;
+            color: #3c3c3c;
+            font-weight: bold;
+            text-decoration: none;
+            height: 70px;
+            position: relative;
+        }
+
+        .nav-item:not(:last-child)::after {
+            content: "";
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            width: 1px;
+            background-color: #b3b3b3;
+        }
+
+        .nav-item:hover {
+            background-color: #eaeaea;
+        }
+
+        .nav-item.active {
+            color: #d81921;
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            flex: 1;
+            padding: 20px;
+            background-image: url("background.png");
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+        }
+
+        /* 左侧部分样式 */
+        .left {
+            width: 40%;
+            margin-right: 20px;
+            height: 400px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            font-size: 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            text-align: left;
+        }
+
+        /* 右侧部分样式 */
+        .right {
+            width: 40%;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        /* 标题样式 */
+        .section-title {
+            background-color: #fcd535;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* 文本内容样式 */
+        .content-text {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+            /* 游戏类型图片展示样式 */
+        .game-type-images {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 10px;
+        }
+
+        .game-type-image {
+            width: 120px;
+            height: 150px;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center; /* 确保文本居中 */
+            padding-top: 10px;  /* 上边距，防止图片顶端紧贴文本 */
+            transition: transform 0.3s;
+        }
+
+        .game-type-image img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover; /* 使图片自适应框架 */
+        }
+
+        .game-type-image:hover {
+            transform: scale(1.1);
+        }
+
+        /* 游戏类型名称样式 */
+        .game-type-name {
+            font-size: 14px; /* 字体稍微小一些 */
+            margin-top: 8px; /* 上方的间距，确保文本不贴近图片 */
+            color: #333; /* 字体颜色 */
+            font-weight: bold; /* 加粗字体，突出显示 */
+        }
+
+
+        /* 底部版权信息 */
+        .footer-bottom {
+            background-color: #d81921;
+            color: white;
+            text-align: center;
+            padding: 8px;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <div class="navbar">
+        <div class="logo">
+            <div class="logo-inner">电子游戏销量可视化系统</div>
+        </div>
+        <a href="index.html" class="nav-item" onclick="navigateTo('index.html')">首页</a>
+        <a href="sales.html" class="nav-item" onclick="navigateTo('sales.html')">销量数据</a>
+        <a href="game-types.html" class="nav-item active" onclick="navigateTo('game-types.html')">游戏类型</a>
+        <a href="platforms.html" class="nav-item" onclick="navigateTo('platforms.html')">游戏平台</a>
+        <a href="publishers.html" class="nav-item" onclick="navigateTo('publishers.html')">游戏厂商</a>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="main-content">
+        <!-- 左侧文本部分 -->
+        <div class="left">
+            <div class="section-title">游戏类型</div>
+
+            <!-- 游戏类型图片展示 -->
+            <div class="game-type-images">
+                <div class="game-type-image">
+                    <img src="imgs/Action.png" alt="动作游戏">
+                    <p class="game-type-name">动作</p>
+                </div>
+                <div class="game-type-image">
+                    <img src="imgs/Adventure.png" alt="冒险游戏">
+                    <p class="game-type-name">冒险</p>
+                </div>
+                <div class="game-type-image">
+                    <img src="imgs/Role-playing.png" alt="角色扮演游戏">
+                    <p class="game-type-name">角色扮演</p>
+                </div>
+                <div class="game-type-image">
+                    <img src="imgs/Shooter.png" alt="射击游戏">
+                    <p class="game-type-name">射击</p>
+                </div>
+                <div class="game-type-image">
+                    <img src="imgs/Sports.png" alt="体育游戏">
+                    <p class="game-type-name">体育</p>
+                </div>
+                <div class="game-type-image">
+                    <img src="imgs/Platform.png" alt="平台游戏">
+                    <p class="game-type-name">平台</p>
+                </div>
+                <div class="game-type-image">
+                    <img src="imgs/Racing.png" alt="赛车游戏">
+                    <p class="game-type-name">赛车</p>
+                </div>
+                <div class="game-type-image">
+                    <img src="imgs/Fighting.png" alt="格斗游戏">
+                    <p class="game-type-name">格斗</p>
+                </div>
+                <div class="game-type-image">
+                    <img src="imgs/Simulation.png" alt="模拟游戏">
+                    <p class="game-type-name">模拟</p>
+                </div>
+                <div class="game-type-image">
+                    <img src="imgs/Puzzle.png" alt="益智游戏">
+                    <p class="game-type-name">益智</p>
+                </div>
+                <div class="game-type-image">
+                    <img src="imgs/Strategy.png" alt="策略游戏">
+                    <p class="game-type-name">策略</p>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- 右侧图表部分 -->
+        <div class="right">
+            <div class="section-title">类型销量</div>
+            <canvas id="typeChart" width="400" height="300"></canvas>
+        </div>
+    </div>
+
+    <!-- 底部版权信息 -->
+    <div class="footer-bottom">
+        Copyright © 2024 南京师范大学Xzq 版权所有<br>
+        地址：江苏省南京市栖霞区文苑路1号 邮箱：249793853@qq.com
+    </div>
+
+    <script>
+        // 用于处理导航逻辑，避免页面刷新
+        function navigateTo(url) {
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => item.classList.remove('active'));
+            if (url === 'index.html') {
+                window.location.href = url;
+            } else {
+                document.querySelector(`a[href="${url}"]`).classList.add('active');
+                window.history.pushState({}, '', url);
+            }
+        }
+
+        // 绘制类型销量图表
+        window.onload = function() {
+            var ctx = document.getElementById('typeChart').getContext('2d');
+
+            const labels = ['动作', '冒险', '角色扮演', '射击', '体育', '平台', '赛车', '格斗', '模拟', '益智', '策略'];
+            const data = [861.77, 101.93, 326.50, 575.16, 670.09, 445.99, 356.93, 220.74, 181.78, 122.01, 67.83]; // 这里使用data.js的数据
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '游戏类型销量 (百万)',
+                        data: data,
+                        backgroundColor: '#d81921',
+                        borderColor: '#b31214',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: { display: true, text: '游戏类型' }
+                        },
+                        y: {
+                            title: { display: true, text: '销量 (百万)' },
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

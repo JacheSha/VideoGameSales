@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电子游戏销量可视化系统</title>
+    <!-- 引入 Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- 引入 data.js -->
+    <script src="data.js"></script>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f9f9f9;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 顶部导航栏 */
+        .navbar {
+            display: flex;
+            background-color: transparent;
+            height: 70px;
+            flex-shrink: 0;
+        }
+
+        .logo {
+            background-color: #d81921;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            padding: 0 10px;
+        }
+
+        .logo .logo-inner {
+            background-color: #d81921;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: 4px solid white;
+            text-align: center;
+            max-width: fit-content;
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #FFFFFF;
+            color: #3c3c3c;
+            font-weight: bold;
+            text-decoration: none;
+            height: 70px;
+            position: relative;
+        }
+
+        .nav-item:not(:last-child)::after {
+            content: "";
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            width: 1px;
+            background-color: #b3b3b3;
+        }
+
+        .nav-item:hover {
+            background-color: #eaeaea;
+        }
+
+        .nav-item.active {
+            color: #d81921;
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            display: flex;
+            justify-content: center;  /* 水平居中对齐左右两部分 */
+            align-items: flex-start;  /* 保持垂直顶部对齐 */
+            flex: 1;
+            padding: 20px;
+            background-image: url("background.png");  /* 设置背景图片 */
+            background-size: cover;  /* 让背景图片覆盖整个区域 */
+            background-position: center center;  /* 居中显示图片 */
+            background-attachment: fixed;  /* 固定背景，滚动时背景不动 */
+        }
+
+        /* 左侧部分样式 */
+        .left {
+            width: 40%;  /* 设置左侧部分固定宽度，适当减少 */
+            margin-right: 20px;  /* 为了分开左边和右边 */
+            height: 400px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            font-size: 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* 上对齐 */
+            text-align: left; /* 左对齐文本 */
+        }
+
+        /* 右侧部分样式 */
+        .right {
+            width: 40%;  
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        /* 标题样式 */
+        .section-title {
+            background-color: #fcd535;  /* 黄色背景 */
+            color: white;
+            padding: 10px 20px;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* 文本内容样式 */
+        .content-text {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* 底部版权信息 */
+        .footer-bottom {
+            background-color: #d81921;
+            color: white;
+            text-align: center;
+            padding: 8px;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <div class="navbar">
+        <div class="logo">
+            <div class="logo-inner">电子游戏销量可视化系统</div>
+        </div>
+        <a href="index.html" class="nav-item" onclick="setActiveNav('index.html')">首页</a>
+        <a href="sales.html" class="nav-item active" onclick="setActiveNav('sales.html')">销量数据</a>
+        <a href="game-types.html" class="nav-item" onclick="setActiveNav('game-types.html')">游戏类型</a>
+        <a href="platforms.html" class="nav-item" onclick="setActiveNav('platforms.html')">游戏平台</a>
+        <a href="publishers.html" class="nav-item" onclick="setActiveNav('publishers.html')">游戏厂商</a>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="main-content">
+        <!-- 左侧文本部分 -->
+        <div class="left">
+            <div class="section-title">销量分析</div>
+            <div class="content-text">
+                <p>电子游戏市场起始于1980年，十多年间一直不温不火</p>
+                <p>此局面在1995年开始迎来转机，电子游戏市场高速增长，一路高歌猛进，在2008年达到一个巅峰期</p>
+                <p>2008年以后后由盛转衰，一路暴跌</p>
+            </div>
+        </div>
+
+       <!-- 右侧图表部分 -->
+        <div class="right">
+            <div class="section-title">销量图表</div>
+            <canvas id="salesChart" width="400" height="300"></canvas> <!-- 这里添加canvas元素 -->
+        </div>
+    </div>
+
+    <!-- 底部版权信息 -->
+    <div class="footer-bottom">
+        Copyright © 2024 南京师范大学Xzq 版权所有<br>
+        地址：江苏省南京市栖霞区文苑路1号 邮箱：249793853@qq.com
+    </div>
+
+    <script>
+        // 用于处理导航项的激活逻辑
+        function setActiveNav(url) {
+            // 获取所有导航项
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            // 将所有导航项的 active 类移除
+            navItems.forEach(item => item.classList.remove('active'));
+
+            // 根据点击的链接，给该导航项添加 active 类
+            const activeNav = [...navItems].find(item => item.href.includes(url));
+            if (activeNav) {
+                activeNav.classList.add('active');
+            }
+        }
+
+        // 绘制销量图表
+        window.onload = function() {
+            const ctx = document.getElementById('salesChart').getContext('2d');
+
+            // 从 sales_by_year 数组中提取年份和销量
+            const labels = sales_by_year.map(item => item.year);  // 提取年份
+            const data = sales_by_year.map(item => item.sales);  // 提取销量
+
+            // 创建折线图
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,  // x轴：年份
+                    datasets: [{
+                        label: '电子游戏销量',
+                        data: data,  // y轴：销量数据
+                        fill: false,
+                        borderColor: '#d81921',  // 折线颜色
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: '年份'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: '销量 (百万)'
+                            },
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
